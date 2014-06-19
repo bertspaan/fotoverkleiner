@@ -1,0 +1,21 @@
+@font-face {
+  font-family: 'Edmondsans';
+  font-style: normal;
+  font-weight: normal;
+  src: url('fonts/Edmondsans-Regular.otf')
+}
+
+body {
+  font-family: 'Edmondsans', sans-serif;
+  margin: 40px;
+  background-color: black;
+}
+
+h1 {
+  font-size: 60px;
+  text-align: center;
+}
+
+body, a, a:visited {
+  color: white;
+}
