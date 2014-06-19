@@ -4,13 +4,13 @@ lock '3.2.1'
 set :default_stage, 'production'
 set :application, 'photo-resizer'
 
-set :repo_url,
+set :repo_url, 'https://github.com/bertspaan/fotoverkleiner.git'
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 
 # Default deploy_to directory is /var/www/my_app
-set :deploy_to, '/home/ubuntu/photo-resizer'
+set :deploy_to, '/usr/share/nginx/fotoverkleiner'
 
 # Default value for :scm is :git
 set :scm, :git
