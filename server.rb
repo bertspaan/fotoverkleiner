@@ -4,7 +4,7 @@ require 'sinatra'
 require 'json'
 
 class Fotoverkleiner < Sinatra::Base
-  config = JSON.parse(File.read('./../shared/config.json'), symbolize_names: true)
+  config = JSON.parse(File.read('/var/www/fotoverkleiner/shared/config.json'), symbolize_names: true)
   sizes = JSON.parse(File.read('./sizes.json'), symbolize_names: true)
 
   get '/' do
