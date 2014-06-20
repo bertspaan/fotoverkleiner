@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Simple Role Syntax
 # ==================
 # Supports bulk-adding hosts to roles, the primary server in each group
@@ -15,7 +17,7 @@
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server 'ec2.bertspaan.nl', user: 'ubuntu', roles: %w{web app}
+server 'ec2', user: 'ubuntu', roles: %w{web app}
 
 
 # Custom SSH Options

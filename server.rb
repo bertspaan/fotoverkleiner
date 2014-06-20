@@ -1,8 +1,7 @@
+# encoding: utf-8
+
 require 'sinatra'
 require 'json'
-
-#$LOAD_PATH.unshift File.dirname(__FILE__)
-
 
 class Fotoverkleiner < Sinatra::Base
   config = JSON.parse(File.read('./config.json'), symbolize_names: true)
@@ -12,11 +11,7 @@ class Fotoverkleiner < Sinatra::Base
     File.read(File.join('public', 'index.html'))
   end
 
-  get '/test' do
-    "hond"
-    config[:secret_access_key]
-  end
-
+  # curl -XPOST -H "Content-Type: image/jpeg" --data-binary @/home/ubuntu/test.jpg http://localhost:9292/upload
   post '/upload' do
     unless params[:file] &&
            (tmpfile = params[:file][:tempfile]) &&
@@ -63,15 +58,3 @@ class Fotoverkleiner < Sinatra::Base
   end
 
 end
-
-
-
-
-
-
-
-
-
-
-
-
