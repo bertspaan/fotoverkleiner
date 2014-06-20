@@ -7,6 +7,10 @@ class Fotoverkleiner < Sinatra::Base
   config = JSON.parse(File.read('/var/www/fotoverkleiner/shared/config.json'), symbolize_names: true)
   sizes = JSON.parse(File.read('./sizes.json'), symbolize_names: true)
 
+  before do
+    content_type 'application/json; charset=utf-8'
+  end
+
   get '/' do
     File.read(File.join('public', 'index.html'))
   end
@@ -51,6 +55,7 @@ class Fotoverkleiner < Sinatra::Base
       halt 500, { error: error.message }.to_json
     end
 
+    content_type :json
     return {
       filename: name,
       sizes: sizes.values.map {|size| size.join('x') }
