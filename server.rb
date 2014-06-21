@@ -5,10 +5,14 @@ require 'json'
 
 class Fotoverkleiner < Sinatra::Base
   config = JSON.parse(File.read('/var/www/fotoverkleiner/shared/config.json'), symbolize_names: true)
+  #config = JSON.parse(File.read('./config.json'), symbolize_names: true)
   sizes = JSON.parse(File.read('./sizes.json'), symbolize_names: true)
 
+  Aws.config = {access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key], region: config[:region]}
+  s3 = Aws::S3.new
+
   before do
-    content_type 'application/json; charset=utf-8'
+    content_type 'text/html; charset=utf-8'
   end
 
   get '/' do
@@ -26,14 +30,15 @@ class Fotoverkleiner < Sinatra::Base
     # TODO: see if file not already exist!
 
     begin
-      s3 = AWS::S3.new(access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key], region: config[:region])
-      bucket = s3.buckets[config[:bucket]]
+      #s3 = AWS::S3.new(access_key_id: config[:access_key_id], secret_access_key: config[:secret_access_key], region: config[:region])
+      #bucket = s3.buckets[config[:bucket]]
 
-      obj = bucket.objects["#{config[:path]}/#{name}"]
-      if obj.exists?
-        halt 409, "File already exists: '#{name}'"
-      end
-      obj.write(Pathname.new(tmpfile))
+      tmpfile.binmode
+      resp = s3.put_object(
+        :bucket => config[:bucket],
+        :key => "#{config[:path]}/#{name}",
+        :body => tmpfile.read
+      )
 
       sizes.values.each do |width, height|
         path_size = "#{config[:path]}/sizes/#{width}x#{height}"
@@ -44,11 +49,17 @@ class Fotoverkleiner < Sinatra::Base
         end
         tmpfile_size = Tempfile.new("#{name}.#{width}x#{height}")
         image.write tmpfile_size
+        tmpfile_size.binmode
 
-        obj_size = bucket.objects["#{path_size}/#{name}"]
-        obj_size.write(Pathname.new(tmpfile_size))
+        tmpfile_size.rewind
+        resp = s3.put_object(
+          :bucket => config[:bucket],
+          :key => "#{path_size}/#{name}",
+          :body => tmpfile_size.read
+        )
 
-        #image.write "#{directory}/#{basename}"
+        # Write resized image to disk locally (for testing):
+        #image.write "/Users/bert/Downloads/#{name}.#{width}x#{height}.jpg"
       end
 
     rescue => error
